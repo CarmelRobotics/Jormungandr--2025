@@ -23,6 +23,18 @@ public final class Constants {
     public static final int kPivotOneCANID = 10;
     public static final int kPivotTwoCANID = 10;
     public static final int kExtendCANID = 10;
+    public static final double[] intakeFront = {0,0};
+    public static final double[] intakeBack = {0,0};
+    public static final double[] L1 = {0,0};
+    public static final double[] L2 = {0,0};
+    public static final double[] L3 = {0,0};
+    public static final double[] L4 = {0,0};
+    public static final double[] Processor = {0,0};
+    public static final double[] AlgaeReef = {0,0};
+    public static final double[] Stow = {0,0};
+    public static final double kPivot_kG = 0.30;
+    public static final double kPivot = 0.84;
+    public static final double extend_kP = 0.1;
 
 
   }
