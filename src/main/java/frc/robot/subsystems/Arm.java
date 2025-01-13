@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import dev.doglog.*;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -67,7 +68,8 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         DogLog.log("Arm state", this.armState);
-        pivotControl.withPosition(this.armState.pivotSetpoint);
+        DogLog.log("Pivot current draw", pivotOne.getSupplyCurrent().getValueAsDouble() + pivotTwo.getSupplyCurrent().getValueAsDouble() );
+        pivotControl.withPosition(Rotation2d.fromDegrees(this.armState.pivotSetpoint).getRotations());
         extendControl.withPosition(this.armState.extendSetpoint);
         
 
@@ -77,6 +79,7 @@ public class Arm extends SubsystemBase {
             this.armState = newState;
         });
     }
+
 
     
     

@@ -38,7 +38,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    
     DogLog.setPdh(new PowerDistribution(1, ModuleType.kRev));
     DogLog.setEnabled(true);
     DogLog.setOptions(new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(true));
