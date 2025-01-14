@@ -79,6 +79,12 @@ public class Arm extends SubsystemBase {
             this.armState = newState;
         });
     }
+    public double getArmCurrentDraw(){
+        return pivotOne.getSupplyCurrent().getValueAsDouble() + pivotTwo.getSupplyCurrent().getValueAsDouble() + extend.getSupplyCurrent().getValueAsDouble();
+    }
+    public ArmState getArmState(){
+        return this.armState;
+    }
 
 
     
