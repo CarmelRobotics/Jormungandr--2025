@@ -15,6 +15,20 @@ package frc.robot;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kButton_A = 0;
+    public static final int kButton_B = 0;
+    public static final int kButton_X = 0;
+    public static final int kButton_Y = 0;
+    public static final int kTrigger_Right = 0;
+    public static final int kTrigger_Left = 0;
+    public static final int kBumper_Right = 0;
+    public static final int kBumper_Left = 0;
+    public static final int kDpad_Up = 0;
+    public static final int kDpad_Down = 0;
+    public static final int kDpad_Right = 0;
+    public static final int kDpad_Left = 0;
+
+
   } 
   public static final class ArmConstants{
     public static final int kArmMaxAccel = 100;
@@ -32,7 +46,8 @@ public final class Constants {
     public static final double[] Processor = {0,0};
     public static final double[] AlgaeReef = {0,0};
     public static final double[] Stow = {0,0};
-    public static final double kPivot_kG = 0.30;
+    public static final double[] Alage = {0,0};
+    public static final double kPivot_kG = 0.035; //constant that is multiplied by arm extension to account for gravity affecting arm more when extended
     public static final double kPivot = 0.84;
     public static final double extend_kP = 0.1;
 

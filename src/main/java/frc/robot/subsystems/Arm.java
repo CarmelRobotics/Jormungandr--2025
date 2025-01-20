@@ -59,6 +59,7 @@ public class Arm extends SubsystemBase {
         public static enum PivotState{
             INTAKE_FRONT(ArmConstants.intakeFront[0]),
             INTAKE_BACK(ArmConstants.intakeBack[0]),
+            ALGAE(ArmConstants.Alage[0]),
             STOW(ArmConstants.Stow[0]),
             L1(ArmConstants.L1[0]),
             L2(ArmConstants.L2[0]),
@@ -76,6 +77,7 @@ public class Arm extends SubsystemBase {
             INTAKE_FRONT(ArmConstants.intakeFront[1]),
             INTAKE_BACK(ArmConstants.intakeBack[1]),
             STOW(ArmConstants.Stow[1]),
+            ALGAE(ArmConstants.Alage[1]),
             L1(ArmConstants.L1[1]),
             L2(ArmConstants.L2[1]),
             L3(ArmConstants.L3[1]),
@@ -89,9 +91,10 @@ public class Arm extends SubsystemBase {
     }
     @Override
     public void periodic() {
+        
         DogLog.log("Arm state", this.pivotState);
         DogLog.log("Pivot current draw", pivotOne.getSupplyCurrent().getValueAsDouble() + pivotTwo.getSupplyCurrent().getValueAsDouble() );
-        pivotControl.withPosition(Rotation2d.fromDegrees(this.pivotState.pivotSetpoint).getRotations());
+        pivotControl.withPosition(Rotation2d.fromDegrees(this.pivotState.pivotSetpoint).getRotations()).withFeedForward(ArmConstants.kPivot_kG * this.extendState.extendSetpoint);
         extendControl.withPosition(this.extendState.extendSetpoint);
         
 

@@ -5,12 +5,20 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Arm.ExtendState;
+import frc.robot.subsystems.Arm.PivotState;
+import frc.robot.subsystems.Intake.IntakeState;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -23,12 +31,19 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   public CommandJoystick kController;
+  public Arm arm;
+  public Intake intake;
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    kController = new CommandJoystick(0);
+    kController = new CommandJoystick(OperatorConstants.kDriverControllerPort);
+    DogLog.setPdh(new PowerDistribution(1, ModuleType.kRev));
+    DogLog.setEnabled(true);
+    DogLog.setOptions(new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(true));
     // Configure the trigger bindings
     configureBindings();
+    
   }
 
   /**
@@ -41,10 +56,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    
-    DogLog.setPdh(new PowerDistribution(1, ModuleType.kRev));
-    DogLog.setEnabled(true);
-    DogLog.setOptions(new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(true));
+    kController.button(OperatorConstants.kTrigger_Right).onTrue(new ParallelCommandGroup(intake.sendIntakeRequest(IntakeState.INTAKING),new SequentialCommandGroup(arm.setPivot(PivotState.INTAKE_FRONT),new WaitUntilCommand(()->arm.atPivotSetpoint()),arm.setExtend(ExtendState.INTAKE_FRONT))));
+    kController.button(OperatorConstants.kDpad_Down).onTrue(Commands.sequence(arm.setExtend(ExtendState.STOW),Commands.waitUntil(()->arm.atExtendSetpoint()),arm.setPivot(PivotState.STOW)));
     
   }
 
