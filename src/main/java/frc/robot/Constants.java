@@ -21,8 +21,8 @@ public final class Constants {
     public static final int kArmMaxVel = 100;
     public static final int kArmCurrentLimit = 45;
     public static final int kPivotOneCANID = 10;
-    public static final int kPivotTwoCANID = 10;
-    public static final int kExtendCANID = 10;
+    public static final int kPivotTwoCANID = 11;
+    public static final int kExtendCANID = 12;
     public static final double[] intakeFront = {0,0};
     public static final double[] intakeBack = {0,0};
     public static final double[] L1 = {0,0};
@@ -37,5 +37,9 @@ public final class Constants {
     public static final double extend_kP = 0.1;
 
 
+  }
+  public static final class IntakeConstants{
+    public static final int kIntakeCurrentLimit = 30;
+    public static final int kIntakeCANID = 13;
   }
 }

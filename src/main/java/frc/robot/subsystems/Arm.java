@@ -9,8 +9,9 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import dev.doglog.*;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
@@ -18,8 +19,9 @@ import frc.robot.Constants.ArmConstants;
 public class Arm extends SubsystemBase {
     private TalonFX pivotOne;
     private TalonFX pivotTwo;
-    public ArmState armState;
-    public static ArmState prevArmState;
+    public PivotState pivotState;
+    public ExtendState extendState;
+    public static PivotState prevPivotState;
         private TalonFX extend;
         private TalonFXConfiguration pivotOneConfig = new TalonFXConfiguration();
         private TalonFXConfiguration pivotTwoConfig = new TalonFXConfiguration();
@@ -45,54 +47,82 @@ public class Arm extends SubsystemBase {
             pivotOne = new TalonFX(ArmConstants.kPivotOneCANID);
             pivotTwo = new TalonFX(ArmConstants.kPivotTwoCANID);
             extend = new TalonFX(ArmConstants.kExtendCANID);
-            armState = ArmState.STOW;
-            prevArmState = ArmState.STOW;
+            pivotOne.getConfigurator().apply(pivotOneConfig);
+            pivotTwo.getConfigurator().apply(pivotTwoConfig);
+            extend.getConfigurator().apply(extendConfig);
+            pivotState = PivotState.STOW;
+            extendState = ExtendState.STOW;
+            prevPivotState = PivotState.STOW;
             pivotOne.setControl(pivotControl);
             extend.setControl(extendControl);
         }
-        public static enum ArmState{
-            INTAKE_FRONT(ArmConstants.intakeFront[0],ArmConstants.intakeFront[1]),
-            INTAKE_BACK(ArmConstants.intakeBack[0],ArmConstants.intakeBack[1]),
-            STOW(ArmConstants.Stow[0],ArmConstants.Stow[1]),
-            L1(ArmConstants.L1[0],ArmConstants.L1[1]),
-            L2(ArmConstants.L2[0],ArmConstants.L2[1]),
-            L3(ArmConstants.L3[0],ArmConstants.L3[1]),
-            L4(ArmConstants.L4[0],ArmConstants.L4[1]),
-            PROCESSOR(ArmConstants.Processor[0],ArmConstants.Processor[1]),
-            ALGAE_REEF(ArmConstants.AlgaeReef[0],ArmConstants.AlgaeReef[1]),
-            DUNK(prevArmState.pivotSetpoint - 10,prevArmState.extendSetpoint);
+        public static enum PivotState{
+            INTAKE_FRONT(ArmConstants.intakeFront[0]),
+            INTAKE_BACK(ArmConstants.intakeBack[0]),
+            STOW(ArmConstants.Stow[0]),
+            L1(ArmConstants.L1[0]),
+            L2(ArmConstants.L2[0]),
+            L3(ArmConstants.L3[0]),
+            L4(ArmConstants.L4[0]),
+            PROCESSOR(ArmConstants.Processor[0]),
+            ALGAE_REEF(ArmConstants.AlgaeReef[0]),
+            DUNK(prevPivotState.pivotSetpoint - 10);
         public double pivotSetpoint;
-        public double extendSetpoint;
-        private ArmState(double pivotSetpoint, double extendSetpoint){
+        private PivotState(double pivotSetpoint){
             this.pivotSetpoint = pivotSetpoint;
+        }
+    }
+        public static enum ExtendState{
+            INTAKE_FRONT(ArmConstants.intakeFront[1]),
+            INTAKE_BACK(ArmConstants.intakeBack[1]),
+            STOW(ArmConstants.Stow[1]),
+            L1(ArmConstants.L1[1]),
+            L2(ArmConstants.L2[1]),
+            L3(ArmConstants.L3[1]),
+            L4(ArmConstants.L4[1]),
+            PROCESSOR(ArmConstants.Processor[1]),
+            ALGAE_REEF(ArmConstants.AlgaeReef[1]);
+            public double extendSetpoint;
+        private ExtendState(double extendSetpoint){
             this.extendSetpoint = extendSetpoint;
         }
     }
     @Override
     public void periodic() {
-        DogLog.log("Arm state", this.armState);
+        DogLog.log("Arm state", this.pivotState);
         DogLog.log("Pivot current draw", pivotOne.getSupplyCurrent().getValueAsDouble() + pivotTwo.getSupplyCurrent().getValueAsDouble() );
-        pivotControl.withPosition(Rotation2d.fromDegrees(this.armState.pivotSetpoint).getRotations());
-        extendControl.withPosition(this.armState.extendSetpoint);
+        pivotControl.withPosition(Rotation2d.fromDegrees(this.pivotState.pivotSetpoint).getRotations());
+        extendControl.withPosition(this.extendState.extendSetpoint);
         
 
     }
-    public Command setState(ArmState newState){
-        return run(()->{
-            this.armState = newState;
+    public Command setPivot(PivotState newState){
+        return runOnce(()->{
+            this.pivotState = newState;
         });
+    }
+    public Command setExtend(ExtendState newState){
+        return runOnce(()->{
+            this.extendState = newState;
+        });
+    }
+    public boolean atPivotSetpoint(){
+        return MathUtil.isNear(this.pivotState.pivotSetpoint, Units.rotationsToDegrees(pivotControl.Position), 3); 
+    }
+    public boolean atExtendSetpoint(){
+        return MathUtil.isNear(this.extendState.extendSetpoint, extendControl.Position, 3); 
     }
     public double getArmCurrentDraw(){
         return pivotOne.getSupplyCurrent().getValueAsDouble() + pivotTwo.getSupplyCurrent().getValueAsDouble() + extend.getSupplyCurrent().getValueAsDouble();
     }
-    public ArmState getArmState(){
-        return this.armState;
+    public PivotState getPivotState(){
+        return this.pivotState;
     }
     public Command dunkCoral(){
         return runOnce(
             ()->{
-                prevArmState = this.armState;
-                this.armState = ArmState.DUNK;
+                prevPivotState = this.pivotState;
+                this.pivotState = PivotState.DUNK;
             }
         );
     }
