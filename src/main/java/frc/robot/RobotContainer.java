@@ -76,7 +76,7 @@ public class RobotContainer {
     kController.button(OperatorConstants.kButton_X).onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.L2),waitForPivot,arm.setExtend(ExtendState.L2)));
     kController.button(OperatorConstants.kButton_Y).onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.L1),waitForPivot,arm.setExtend(ExtendState.L1)));
     kController.button(OperatorConstants.kTrigger_Left).onTrue(Commands.parallel(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.INTAKE_BACK),waitForPivot,arm.setExtend(ExtendState.INTAKE_BACK)),intake.sendIntakeRequest(IntakeState.INTAKING)));
-    kController.button(OperatorConstants.kBumper_Left).onTrue(intake.sendIntakeRequest(IntakeState.INTAKING));
+    kController.button(OperatorConstants.kBumper_Left).onTrue(intake.sendIntakeRequest(IntakeState.OUTTAKING));
     kController.button(OperatorConstants.kBumper_Right).onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.ALGAE),waitForPivot,arm.setExtend(ExtendState.ALGAE)));
     kController.button(OperatorConstants.kDpad_Up).onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.PROCESSOR),waitForPivot,arm.setExtend(ExtendState.PROCESSOR)));
     kController.button(OperatorConstants.kDpad_Right).onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.ALGAE_REEF),waitForPivot,arm.setExtend(ExtendState.ALGAE_REEF)));
