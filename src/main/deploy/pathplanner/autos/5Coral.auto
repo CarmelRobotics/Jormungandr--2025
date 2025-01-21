@@ -45,6 +45,18 @@
           "data": {
             "pathName": "4Coral_7"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5Coral_1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5Coral_2"
+          }
         }
       ]
     }
