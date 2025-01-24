@@ -26,7 +26,7 @@ public class Intake extends SubsystemBase {
     }
     public static enum IntakeState{
         INTAKING(12),
-        HOLDING(8),
+        HOLDING(5),
         OUTTAKING(-12),
         IDLE(0);
         public double voltage;
