@@ -33,7 +33,7 @@ public final class Constants {
   public static final class ArmConstants{
     public static final int kArmMaxAccel = 100;
     public static final int kArmMaxVel = 100;
-    public static final int kArmCurrentLimit = 45;
+    public static final int kArmCurrentLimit = 65;
     public static final int kPivotOneCANID = 10;
     public static final int kPivotTwoCANID = 11;
     public static final int kExtendCANID = 12;

@@ -13,8 +13,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.subsystems.Intake.IntakeState;
 
 public class Arm extends SubsystemBase {
     private TalonFX pivotOne;
@@ -129,9 +131,9 @@ public class Arm extends SubsystemBase {
             }
         );
     }
-
-
-    
+    public Command zeroArm(){
+        return Commands.sequence(runOnce(()->{extend.set(-.5);}), Commands.waitUntil(() -> MathUtil.isNear(65, extend.getSupplyCurrent().getValueAsDouble(),.75) && MathUtil.isNear(0, extend.getVelocity().getValueAsDouble(), 0.5)),runOnce(()->{extend.setPosition(0); extend.set(0);}));
+    }
     
     
 
