@@ -134,7 +134,9 @@ public class Arm extends SubsystemBase {
     public Command zeroArm(){
         return Commands.sequence(runOnce(()->{extend.set(-.5);}), Commands.waitUntil(() -> MathUtil.isNear(65, extend.getSupplyCurrent().getValueAsDouble(),.75) && MathUtil.isNear(0, extend.getVelocity().getValueAsDouble(), 0.5)),runOnce(()->{extend.setPosition(0); extend.set(0);}));
     }
-    
+    public Command zeroPivot(){
+        return Commands.sequence(runOnce(() -> {pivotOne.set(-.5); pivotTwo.set(-.5);}), Commands.waitUntil(()->MathUtil.isNear(65, extend.getSupplyCurrent().getValueAsDouble(),.75) && MathUtil.isNear(0, extend.getVelocity().getValueAsDouble(), 0.5)), runOnce(()->{pivotOne.setPosition(0); pivotTwo.setPosition(0); pivotOne.set(0); pivotTwo.set(0)}));
+    }
     
 
     
