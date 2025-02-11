@@ -33,7 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  public CommandJoystick kController;
+  public CommandXboxController kController;
   public Arm arm;
   public Intake intake;
   private Command retract;
@@ -49,7 +49,7 @@ public class RobotContainer {
     waitForExtension =  Commands.waitUntil(()->arm.atExtendSetpoint());
     waitForPivot = Commands.waitUntil(()->arm.atPivotSetpoint());
     stowArm = Commands.sequence(arm.setExtend(ExtendState.STOW),Commands.waitUntil(()->arm.atExtendSetpoint()),arm.setPivot(PivotState.STOW)); 
-    kController = new CommandJoystick(OperatorConstants.kDriverControllerPort);
+    kController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
     DogLog.setPdh(new PowerDistribution(1, ModuleType.kRev));
     DogLog.setEnabled(true);
     DogLog.setOptions(new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(true));
@@ -70,18 +70,19 @@ public class RobotContainer {
    */
   private void configureBindings() {
     
-    kController.button(OperatorConstants.kTrigger_Right).onTrue(new ParallelCommandGroup(intake.sendIntakeRequest(IntakeState.INTAKING),new SequentialCommandGroup(arm.setPivot(PivotState.INTAKE_FRONT),new WaitUntilCommand(()->arm.atPivotSetpoint()),arm.setExtend(ExtendState.INTAKE_FRONT))));
-    kController.button(OperatorConstants.kDpad_Down).onTrue(stowArm);
-    kController.button(OperatorConstants.kButton_A).onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.L4),waitForPivot,arm.setExtend(ExtendState.L4)));
-    kController.button(OperatorConstants.kButton_B).onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.L3),waitForPivot,arm.setExtend(ExtendState.L3)));
-    kController.button(OperatorConstants.kButton_X).onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.L2),waitForPivot,arm.setExtend(ExtendState.L2)));
-    kController.button(OperatorConstants.kButton_Y).onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.L1),waitForPivot,arm.setExtend(ExtendState.L1)));
-    kController.button(OperatorConstants.kTrigger_Left).onTrue(Commands.parallel(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.INTAKE_BACK),waitForPivot,arm.setExtend(ExtendState.INTAKE_BACK)),intake.sendIntakeRequest(IntakeState.INTAKING)));
-    kController.button(OperatorConstants.kBumper_Left).onTrue(intake.sendIntakeRequest(IntakeState.OUTTAKING));
-    kController.button(OperatorConstants.kBumper_Right).onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.ALGAE),waitForPivot,arm.setExtend(ExtendState.ALGAE)));
-    kController.button(OperatorConstants.kDpad_Up).onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.PROCESSOR),waitForPivot,arm.setExtend(ExtendState.PROCESSOR)));
-    kController.button(OperatorConstants.kDpad_Right).onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.ALGAE_REEF),waitForPivot,arm.setExtend(ExtendState.ALGAE_REEF)));
-    kController.button(OperatorConstants.kDpad_Left).onTrue(arm.dunkCoral());
+    kController.rightTrigger().onTrue(new ParallelCommandGroup(intake.sendIntakeRequest(IntakeState.INTAKING),new SequentialCommandGroup(arm.setPivot(PivotState.INTAKE_FRONT),new WaitUntilCommand(()->arm.atPivotSetpoint()),arm.setExtend(ExtendState.INTAKE_FRONT)))).onFalse(stowArm);
+   // kController.povDown().onTrue(stowArm);
+    kController.a().onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.L4),waitForPivot,arm.setExtend(ExtendState.L4))).onFalse(stowArm);
+    kController.b().onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.L3),waitForPivot,arm.setExtend(ExtendState.L3))).onFalse(stowArm);
+    kController.x().onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.L2),waitForPivot,arm.setExtend(ExtendState.L2))).onFalse(stowArm);
+    kController.y().onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.L1),waitForPivot,arm.setExtend(ExtendState.L1))).onFalse(stowArm);
+    kController.leftTrigger().onTrue(Commands.parallel(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.INTAKE_BACK),waitForPivot,arm.setExtend(ExtendState.INTAKE_BACK)),intake.sendIntakeRequest(IntakeState.INTAKING))).onFalse(stowArm);
+    kController.leftBumper().onTrue(intake.sendIntakeRequest(IntakeState.OUTTAKING));
+    kController.rightBumper().onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.ALGAE),waitForPivot,arm.setExtend(ExtendState.ALGAE))).onFalse(stowArm);
+    kController.povUp().onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.PROCESSOR),waitForPivot,arm.setExtend(ExtendState.PROCESSOR))).onFalse(stowArm);
+    kController.povRight().onTrue(Commands.sequence(retract,waitForExtension,arm.setPivot(PivotState.ALGAE_REEF),waitForPivot,arm.setExtend(ExtendState.ALGAE_REEF))).onFalse(stowArm);
+    kController.povLeft().onTrue(arm.dunkCoral());
+    
   }
 
 
